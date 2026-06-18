@@ -36,6 +36,10 @@ class Settings(BaseSettings):
     # .env 当前环境
     ENVIRONMENT: Literal['dev', 'prod']
 
+    # 服务
+    SERVER_HOST: str = '127.0.0.1'
+    SERVER_PORT: int = 8000
+
     # FastAPI
     FASTAPI_API_V1_PATH: str = '/api/v1'
     FASTAPI_TITLE: str = 'fba'
@@ -55,7 +59,7 @@ class Settings(BaseSettings):
     # 数据库
     DATABASE_ECHO: bool | Literal['debug'] = False
     DATABASE_POOL_ECHO: bool | Literal['debug'] = False
-    DATABASE_SCHEMA: str = 'fba'
+    DATABASE_SCHEMA: str = 'fba_db'
     DATABASE_CHARSET: str = 'utf8mb4'
     DATABASE_PK_MODE: Literal['autoincrement', 'snowflake'] = 'autoincrement'
 
@@ -66,6 +70,7 @@ class Settings(BaseSettings):
     REDIS_DATABASE: int
 
     # Redis
+    REDIS_USERNAME: str = ''
     REDIS_TIMEOUT: int = 5
 
     # 缓存
@@ -168,6 +173,7 @@ class Settings(BaseSettings):
     CORS_ALLOWED_ORIGINS: list[str] = [  # 末尾不带斜杠
         'http://127.0.0.1',
         'http://localhost:5173',
+        'http://localhost:5175',
     ]
     CORS_EXPOSE_HEADERS: list[str] = [
         'X-Request-ID',

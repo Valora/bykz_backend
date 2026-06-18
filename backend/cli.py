@@ -96,6 +96,7 @@ def setup_env_file() -> bool:
         console.note('配置 Redis 连接信息...')
         redis_host = Prompt.ask('Redis 主机', default='127.0.0.1')
         redis_port = Prompt.ask('Redis 端口', default='6379')
+        redis_username = Prompt.ask('Redis 用户名（留空表示默认用户）', default='')
         redis_password = Prompt.ask('Redis 密码（留空表示无密码）', password=True, default='')
         redis_db = Prompt.ask('Redis 数据库编号', default='0')
 
@@ -117,6 +118,8 @@ def setup_env_file() -> bool:
         settings.REDIS_HOST = redis_host
         env_content = env_content.replace('REDIS_PORT=6379', f'REDIS_PORT={redis_port}')
         settings.REDIS_PORT = redis_port
+        env_content = env_content.replace("REDIS_USERNAME=''", f"REDIS_USERNAME='{redis_username}'")
+        settings.REDIS_USERNAME = redis_username
         env_content = env_content.replace("REDIS_PASSWORD=''", f"REDIS_PASSWORD='{redis_password}'")
         settings.REDIS_PASSWORD = redis_password
         env_content = env_content.replace('REDIS_DATABASE=0', f'REDIS_DATABASE={redis_db}')
@@ -218,6 +221,7 @@ async def auto_init() -> None:
     redis_init_client = RedisCli(
         host=settings.REDIS_HOST,
         port=settings.REDIS_PORT,
+        username=settings.REDIS_USERNAME,
         password=settings.REDIS_PASSWORD,
         db=settings.REDIS_DATABASE,
     )
@@ -702,14 +706,14 @@ class Run:
     host: Annotated[
         str,
         cappa.Arg(
-            default='127.0.0.1',
+            default=settings.SERVER_HOST,
             help='提供服务的主机 IP 地址，对于本地开发，请使用 `127.0.0.1`。'
             '要启用公共访问，例如在局域网中，请使用 `0.0.0.0`',
         ),
     ]
     port: Annotated[
         int,
-        cappa.Arg(default=8000, help='提供服务的主机端口号'),
+        cappa.Arg(default=settings.SERVER_PORT, help='提供服务的主机端口号'),
     ]
     no_reload: Annotated[
         bool,

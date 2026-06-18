@@ -13,7 +13,11 @@ from backend.database.redis import redis_client
 # 创建 Socket.IO 服务器实例
 sio = socketio.AsyncServer(
     client_manager=socketio.AsyncRedisManager(
-        f'redis://:{urllib.parse.quote(settings.REDIS_PASSWORD)}@{settings.REDIS_HOST}:{settings.REDIS_PORT}/{settings.REDIS_DATABASE}',
+        f'redis://{urllib.parse.quote(settings.REDIS_USERNAME, safe="")}:{urllib.parse.quote(settings.REDIS_PASSWORD, safe="")}@{settings.REDIS_HOST}:{settings.REDIS_PORT}/{settings.REDIS_DATABASE}',
+        # redis-py 默认 socket_timeout=5s，会让 pubsub 阻塞监听在空闲 5s 后读超时，
+        # 导致 socketio 误判掉线并不断打印 "Cannot receive from redis... retrying"。
+        # 显式置为 None 让监听连接永不读超时。
+        redis_options={'socket_timeout': None},
     ),
     async_mode='asgi',
     cors_allowed_origins=settings.CORS_ALLOWED_ORIGINS,

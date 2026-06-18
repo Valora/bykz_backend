@@ -1,6 +1,7 @@
 import granian
 
 from backend.cli import CustomReloadFilter
+from backend.core.conf import settings
 
 if __name__ == '__main__':
     # DEBUG:
@@ -14,8 +15,8 @@ if __name__ == '__main__':
     granian.Granian(
         target='main:app',
         interface='asgi',
-        address='127.0.0.1',
-        port=8000,
+        address=settings.SERVER_HOST,
+        port=settings.SERVER_PORT,
         reload=True,
         reload_filter=CustomReloadFilter,
     ).serve()

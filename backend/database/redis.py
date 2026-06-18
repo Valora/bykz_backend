@@ -14,6 +14,7 @@ class RedisCli(Redis):
         self,
         host: str = settings.REDIS_HOST,
         port: int = settings.REDIS_PORT,
+        username: str = settings.REDIS_USERNAME,
         password: str = settings.REDIS_PASSWORD,
         db: int = settings.REDIS_DATABASE,
         socket_timeout: int = settings.REDIS_TIMEOUT,
@@ -28,6 +29,7 @@ class RedisCli(Redis):
 
         :param host: Redis 服务器的主机地址
         :param port: Redis 服务器的端口号
+        :param username: Redis 认证用户名（ACL），为空时使用默认用户
         :param password: Redis 认证密码
         :param db: 使用的 Redis 逻辑数据库索引
         :param socket_timeout: Socket 读写操作的超时时间
@@ -39,6 +41,7 @@ class RedisCli(Redis):
         super().__init__(
             host=host,
             port=port,
+            username=username or None,
             password=password,
             db=db,
             socket_timeout=socket_timeout,
